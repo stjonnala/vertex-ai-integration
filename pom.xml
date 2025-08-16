@@ -15,7 +15,7 @@
     <description>Spring Boot application for Vertex AI integration</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
     </properties>
 
     <dependencies>
@@ -34,8 +34,16 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.12</version>
+            <version>1.6.9</version>
         </dependency>
+
+        <!-- Alpaca API Client -->
+        <dependency>
+            <groupId>net.jacobpeterson</groupId>
+            <artifactId>alpaca-java</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

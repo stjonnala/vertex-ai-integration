@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -20,7 +21,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .servers(List.of(new Server().url(serverUrl).description("Default Server URL")))
+                .servers(Arrays.asList(new Server().url(serverUrl).description("Default Server URL")))
                 .info(new Info()
                         .title("Vertex AI Integration API")
                         .description("Spring Boot application with Vertex AI integration")
