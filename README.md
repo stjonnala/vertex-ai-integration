@@ -54,14 +54,16 @@ The response will include both the dollar amount invested and the calculated qua
 ```json
 {
   "orderId": "b0b6dd9d-8b9b-48a9-ba46-b9d54906e415",
-  "takeProfitOrderId": "8624e52d-69e7-4142-a7b1-1ee4d6d3d5f6",
-  "stopLossOrderId": "23cb5cad-5c4b-4259-a6e7-66a225f1c6d8",
+  "takeProfitOrderId": "pending_fill",
+  "stopLossOrderId": "pending_fill",
   "ticker": "AAPL",
   "amount": 3000.00,
   "quantity": 20,
   "status": "ACCEPTED"
 }
 ```
+
+The `takeProfitOrderId` and `stopLossOrderId` will be set to "pending_fill" initially, as these orders are created by Alpaca when the primary order is filled.
 
 #### Limit Bracket Order with Cents-Based Profit and Loss
 
@@ -91,7 +93,9 @@ Stop Loss Price: $149.50 ($10.00 loss, 0.33% lower)
 Order ID: b0b6dd9d-8b9b-48a9-ba46-b9d54906e415
 ```
 
-Note: You need to configure your Alpaca API key and secret in the `application.properties` file.
+Note: You need to configure your Alpaca API key and secret in the `application.properties` file. Once configured, orders placed through these endpoints will appear in your Alpaca paper trading account, allowing you to track and manage them through the Alpaca dashboard.
+
+The application is configured with a 30-second timeout for API calls to Alpaca, which should be sufficient for most operations. If you experience timeout issues, you can adjust the timeout settings in the `RestTemplateConfig` class.
 
 ## Swagger API Documentation
 

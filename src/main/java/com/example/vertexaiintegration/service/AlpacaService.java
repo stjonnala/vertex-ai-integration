@@ -26,11 +26,13 @@ public class AlpacaService {
 
     private final AlpacaAPI alpacaAPI;
     private final AlpacaConfig alpacaConfig;
+    private final RestTemplate restTemplate;
 
     // Constructor
-    public AlpacaService(AlpacaAPI alpacaAPI, AlpacaConfig alpacaConfig) {
+    public AlpacaService(AlpacaAPI alpacaAPI, AlpacaConfig alpacaConfig, RestTemplate restTemplate) {
         this.alpacaAPI = alpacaAPI;
         this.alpacaConfig = alpacaConfig;
+        this.restTemplate = restTemplate;
     }
 
     // Mock current prices for demo purposes
@@ -110,13 +112,57 @@ public class AlpacaService {
             log.info("Placing bracket order for ticker: {}, quantity: {} shares, limitPrice: {}", 
                     request.getTicker(), quantity, request.getLimitPrice());
 
-            // In a real implementation, you would use the Alpaca API to place the order
-            // For now, we'll just create a mock response
+            // Set up the headers with authentication
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("APCA-API-KEY-ID", alpacaConfig.getApiKey());
+            headers.set("APCA-API-SECRET-KEY", alpacaConfig.getApiSecret());
+            headers.set("Content-Type", "application/json");
 
-            // Generate mock order IDs
-            String orderId = UUID.randomUUID().toString();
-            String takeProfitOrderId = UUID.randomUUID().toString();
-            String stopLossOrderId = UUID.randomUUID().toString();
+            // Construct the URL for the orders endpoint
+            String url = alpacaConfig.getBaseUrl() + "/v2/orders";
+
+            // Create the request body for a bracket order
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("symbol", request.getTicker().toUpperCase()); // Ensure symbol is uppercase
+            requestBody.put("qty", quantity);
+            requestBody.put("side", "buy");
+            requestBody.put("type", "limit");
+            requestBody.put("limit_price", request.getLimitPrice().toString());
+            requestBody.put("time_in_force", "gtc"); // Good Till Canceled
+            requestBody.put("order_class", "bracket");
+
+            // Add take profit parameters
+            Map<String, Object> takeProfit = new HashMap<>();
+            takeProfit.put("limit_price", request.getTakeProfitPrice().toString());
+            requestBody.put("take_profit", takeProfit);
+
+            // Add stop loss parameters
+            Map<String, Object> stopLoss = new HashMap<>();
+            stopLoss.put("stop_price", request.getStopLossPrice().toString());
+            requestBody.put("stop_loss", stopLoss);
+
+            // Create the HTTP entity with headers and body
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+            // Make the HTTP request
+            log.info("Sending bracket order request to Alpaca API: {}", requestBody);
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    Map.class
+            );
+
+            // Log the response
+            log.info("Bracket order response: {}", response.getBody());
+
+            // Extract the order IDs from the response
+            String orderId = response.getBody().get("id").toString();
+
+            // The take profit and stop loss order IDs are not directly available in the response
+            // They will be created by Alpaca when the primary order is filled
+            String takeProfitOrderId = "pending_fill";
+            String stopLossOrderId = "pending_fill";
 
             log.info("Order placed successfully. Order ID: {}", orderId);
 
@@ -158,9 +204,6 @@ public class AlpacaService {
                 symbol, amount, limitPrice, profitAmount, lossAmount);
 
         try {
-            // Create a RestTemplate for making HTTP requests
-            RestTemplate restTemplate = new RestTemplate();
-
             // Set up the headers with authentication
             HttpHeaders headers = new HttpHeaders();
             headers.set("APCA-API-KEY-ID", alpacaConfig.getApiKey());
