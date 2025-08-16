@@ -17,7 +17,9 @@ mvn spring-boot:run
 
 The application will start on port 8080.
 
-## Testing the Hello World Controller
+## Testing the Controllers
+
+### Hello World Controller
 
 Once the application is running, you can test the Hello World controller by accessing the following endpoint:
 
@@ -26,6 +28,66 @@ http://localhost:8080/hello
 ```
 
 This should return the response: "Hello, World!"
+
+### Alpaca Trading Controller
+
+The application includes endpoints for placing buy and sell orders in Alpaca. You can test these endpoints using a tool like Postman or curl:
+
+#### Buy Order
+
+```
+POST http://localhost:8080/api/alpaca/buy
+```
+
+Request body example:
+
+```json
+{
+  "ticker": "AAPL",
+  "quantity": 10
+}
+```
+
+Response example:
+
+```json
+{
+  "orderId": "b0b6dd9d-8b9b-48a9-ba46-b9d54906e415",
+  "ticker": "AAPL",
+  "quantity": 10,
+  "side": "buy",
+  "status": "ACCEPTED"
+}
+```
+
+#### Sell Order
+
+```
+POST http://localhost:8080/api/alpaca/sell
+```
+
+Request body example:
+
+```json
+{
+  "ticker": "AAPL",
+  "quantity": 10
+}
+```
+
+Response example:
+
+```json
+{
+  "orderId": "23cb5cad-5c4b-4259-a6e7-66a225f1c6d8",
+  "ticker": "AAPL",
+  "quantity": 10,
+  "side": "sell",
+  "status": "ACCEPTED"
+}
+```
+
+Note: You need to configure your Alpaca API key and secret in the `application.properties` file.
 
 ## Swagger API Documentation
 
