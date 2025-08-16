@@ -97,6 +97,102 @@ Note: You need to configure your Alpaca API key and secret in the `application.p
 
 The application is configured with a 30-second timeout for API calls to Alpaca, which should be sufficient for most operations. If you experience timeout issues, you can adjust the timeout settings in the `RestTemplateConfig` class.
 
+### Order Management API
+
+The application includes endpoints for placing simple market buy and sell orders.
+
+#### Market Buy Order
+
+You can place a market buy order using the following endpoint:
+
+```
+GET http://localhost:8080/api/orders/buy?ticker=AAPL&amount=3000.00
+```
+
+Parameters:
+- `ticker`: The ticker symbol of the stock to buy (e.g., AAPL, MSFT)
+- `amount`: The dollar amount you want to invest (e.g., $3000, $4000). The system will calculate how many shares to buy based on the current price.
+
+The response will be a detailed text message with information about the order:
+
+```
+Successfully placed buy order for AAPL with $3000.00 investment.
+Current Price: $150.00
+Shares Purchased: 20 (approx. $3000.00)
+Order ID: b0b6dd9d-8b9b-48a9-ba46-b9d54906e415
+```
+
+#### Market Sell Order
+
+You can place a market sell order using the following endpoint:
+
+```
+GET http://localhost:8080/api/orders/sell?ticker=AAPL&quantity=10
+```
+
+Parameters:
+- `ticker`: The ticker symbol of the stock to sell (e.g., AAPL, MSFT)
+- `quantity`: The number of shares you want to sell
+
+The response will be a detailed text message with information about the order:
+
+```
+Successfully placed sell order for AAPL with 10 shares.
+Current Price: $150.00
+Total Sale Value: $1500.00
+Order ID: b0b6dd9d-8b9b-48a9-ba46-b9d54906e415
+```
+
+### Limit Order Management API
+
+The application includes endpoints for placing limit buy and sell orders.
+
+#### Limit Buy Order
+
+You can place a limit buy order using the following endpoint:
+
+```
+GET http://localhost:8080/api/limit-orders/buy?ticker=AAPL&amount=3000.00&limitPrice=145.00
+```
+
+Parameters:
+- `ticker`: The ticker symbol of the stock to buy (e.g., AAPL, MSFT)
+- `amount`: The dollar amount you want to invest (e.g., $3000, $4000). The system will calculate how many shares to buy based on the limit price.
+- `limitPrice`: The maximum price you're willing to pay per share
+
+The response will be a detailed text message with information about the order:
+
+```
+Successfully placed limit buy order for AAPL with $3000.00 investment.
+Current Price: $150.00
+Limit Price: $145.00
+Shares to Purchase: 20 (approx. $2900.00)
+Order ID: b0b6dd9d-8b9b-48a9-ba46-b9d54906e415
+```
+
+#### Limit Sell Order
+
+You can place a limit sell order using the following endpoint:
+
+```
+GET http://localhost:8080/api/limit-orders/sell?ticker=AAPL&quantity=10&limitPrice=155.00
+```
+
+Parameters:
+- `ticker`: The ticker symbol of the stock to sell (e.g., AAPL, MSFT)
+- `quantity`: The number of shares you want to sell
+- `limitPrice`: The minimum price you're willing to accept per share
+
+The response will be a detailed text message with information about the order:
+
+```
+Successfully placed limit sell order for AAPL with 10 shares.
+Current Price: $150.00
+Limit Price: $155.00
+Total Sale Value: $1550.00
+Order ID: b0b6dd9d-8b9b-48a9-ba46-b9d54906e415
+```
+
 ## Swagger API Documentation
 
 The application includes Swagger UI for API documentation and testing. Once the application is running, you can access the Swagger UI at:
