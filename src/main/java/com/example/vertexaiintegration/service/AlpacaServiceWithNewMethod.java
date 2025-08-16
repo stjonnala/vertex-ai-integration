@@ -20,15 +20,15 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class AlpacaService {
+public class AlpacaServiceWithNewMethod {
 
-    private static final Logger log = LoggerFactory.getLogger(AlpacaService.class);
+    private static final Logger log = LoggerFactory.getLogger(AlpacaServiceWithNewMethod.class);
 
     private final AlpacaAPI alpacaAPI;
     private final AlpacaConfig alpacaConfig;
 
     // Constructor
-    public AlpacaService(AlpacaAPI alpacaAPI, AlpacaConfig alpacaConfig) {
+    public AlpacaServiceWithNewMethod(AlpacaAPI alpacaAPI, AlpacaConfig alpacaConfig) {
         this.alpacaAPI = alpacaAPI;
         this.alpacaConfig = alpacaConfig;
     }

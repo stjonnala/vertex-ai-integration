@@ -31,25 +31,23 @@ This should return the response: "Hello, World!"
 
 ### Alpaca Trading Controller
 
-The application includes an endpoint for placing bracket orders in Alpaca. You can test this endpoint using a tool like Postman or curl:
+The application includes endpoints for placing bracket orders in Alpaca.
+
+#### Standard Bracket Order
+
+You can test this endpoint using a web browser or a tool like Postman or curl:
 
 ```
-POST http://localhost:8080/api/alpaca/bracket-order
+GET http://localhost:8080/api/alpaca/bracket-order?ticker=AAPL&amount=3000.00&limitPrice=150.00&takeProfitPrice=155.00&stopLossPrice=145.00
 ```
 
-Request body example:
+All parameters are passed as query parameters in the URL. All parameters are required:
 
-```json
-{
-  "ticker": "AAPL",
-  "amount": 3000.00,
-  "limitPrice": 150.00,
-  "takeProfitPrice": 155.00,
-  "stopLossPrice": 145.00
-}
-```
-
-All fields are required. The `amount` is the dollar amount you want to invest (e.g., $3000, $4000), and the system will calculate how many shares to buy based on the current price. The `limitPrice` is the price at which you want to enter the position, the `takeProfitPrice` is the price at which you want to take profit, and the `stopLossPrice` is the price at which you want to cut losses.
+- `ticker`: The ticker symbol of the stock to trade (e.g., AAPL, MSFT)
+- `amount`: The dollar amount you want to invest (e.g., $3000, $4000). The system will calculate how many shares to buy based on the current price.
+- `limitPrice`: The price at which you want to enter the position
+- `takeProfitPrice`: The price at which you want to take profit
+- `stopLossPrice`: The price at which you want to cut losses
 
 The response will include both the dollar amount invested and the calculated quantity of shares:
 
@@ -63,6 +61,34 @@ The response will include both the dollar amount invested and the calculated qua
   "quantity": 20,
   "status": "ACCEPTED"
 }
+```
+
+#### Limit Bracket Order with Cents-Based Profit and Loss
+
+This endpoint allows you to place a limit bracket order with profit and loss specified in cents above and below the limit price:
+
+```
+POST http://localhost:8080/api/alpaca/limit-order?ticker=AAPL&amount=3000.00&limitPrice=150.00&profitCents=50&lossCents=50
+```
+
+All parameters are passed as query parameters in the URL. All parameters are required:
+
+- `ticker`: The ticker symbol of the stock to trade (e.g., AAPL, MSFT)
+- `amount`: The dollar amount you want to invest (e.g., $3000, $4000). The system will calculate how many shares to buy based on the current price.
+- `limitPrice`: The limit price for the buy order
+- `profitCents`: The number of cents above the limit price for take profit (e.g., 50 means $0.50 above the limit price)
+- `lossCents`: The number of cents below the limit price for stop loss (e.g., 50 means $0.50 below the limit price)
+
+The response will be a detailed text message with information about the order:
+
+```
+Successfully placed limit bracket order for AAPL with $3000.00 investment.
+Current Price: $150.00
+Limit Buy Price: $150.00
+Shares Purchased: 20 (approx. $3000.00)
+Take Profit Price: $150.50 ($10.00 profit, 0.33% higher)
+Stop Loss Price: $149.50 ($10.00 loss, 0.33% lower)
+Order ID: b0b6dd9d-8b9b-48a9-ba46-b9d54906e415
 ```
 
 Note: You need to configure your Alpaca API key and secret in the `application.properties` file.

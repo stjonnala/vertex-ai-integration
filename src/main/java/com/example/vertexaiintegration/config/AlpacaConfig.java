@@ -16,6 +16,9 @@ public class AlpacaConfig {
     @Value("${alpaca.api.secret}")
     private String apiSecret;
 
+    @Value("${alpaca.api.base-url}")
+    private String baseUrl;
+
     // Getters
     public String getApiKey() {
         return apiKey;
@@ -23,6 +26,10 @@ public class AlpacaConfig {
 
     public String getApiSecret() {
         return apiSecret;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
     @Bean
