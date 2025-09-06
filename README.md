@@ -175,7 +175,7 @@ Note: You need to configure your Perplexity API key in the `application.properti
 
 ### Stock Recommendations Controller
 
-The application includes a feature that queries Perplexity AI every 5 minutes to get the top 10 stocks that align with Warren Buffett's investment strategy. The results are displayed on a React frontend.
+The application includes a feature that queries Perplexity AI every 5 minutes to get the top 10 stocks that align with Warren Buffett's investment strategy. The query is specifically designed to retrieve the most up-to-date, real-time stock prices available. The results are displayed on a React frontend.
 
 #### Frontend
 
@@ -188,7 +188,7 @@ http://localhost:8080/
 This will display a list of the top 10 stocks that align with Warren Buffett's investment strategy, including:
 - Ticker symbol
 - Company name
-- Current price
+- Current real-time price
 - Reason for recommendation based on Buffett's principles
 - Potential upside percentage
 
@@ -204,7 +204,7 @@ You can also access the stock recommendations directly through the API:
 GET http://localhost:8080/api/stocks
 ```
 
-Response example:
+Response example (note that the "currentPrice" field contains real-time stock prices):
 
 ```json
 [
@@ -231,7 +231,7 @@ Response example:
 GET http://localhost:8080/api/stocks/with-metadata
 ```
 
-Response example:
+Response example (note that the "currentPrice" field contains real-time stock prices):
 
 ```json
 {

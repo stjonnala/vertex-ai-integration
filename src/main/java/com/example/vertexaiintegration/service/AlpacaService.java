@@ -11,6 +11,13 @@ import net.jacobpeterson.alpaca.model.endpoint.orders.enums.OrderType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Map;
 
 @Service
 public class AlpacaService {
@@ -102,6 +109,55 @@ public class AlpacaService {
                     "FAILED",
                     e.getMessage()
             );
+        }
+    }
+
+    /**
+     * Gets the latest price for a given ticker symbol using a public API.
+     * 
+     * Note: This implementation uses the Alpha Vantage API to fetch real-time stock prices.
+     * Alpha Vantage provides free stock APIs but has rate limits (especially with the demo key).
+     * In a production environment, you should:
+     * 1. Register for a free API key at https://www.alphavantage.co/support/#api-key
+     * 2. Store the API key in application.properties
+     * 3. Consider implementing caching to reduce API calls
+     * 4. Handle rate limiting gracefully
+     *
+     * @param ticker The ticker symbol to get the price for
+     * @return The latest price, or -1 if the price could not be retrieved
+     */
+    public double getLatestPrice(String ticker) {
+        log.info("Getting latest price for ticker: {}", ticker);
+
+        try {
+            // Use Alpha Vantage's Global Quote API to get the latest price
+            // Note: The demo key has very limited API calls per day
+            // For production use, replace with your own API key
+            String apiKey = "demo"; // Replace with your Alpha Vantage API key
+            String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + ticker + "&apikey=" + apiKey;
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+            Map<String, Object> responseBody = response.getBody();
+
+            if (responseBody != null && responseBody.containsKey("Global Quote")) {
+                Map<String, Object> quote = (Map<String, Object>) responseBody.get("Global Quote");
+                if (quote != null && quote.containsKey("05. price")) {
+                    String priceStr = (String) quote.get("05. price");
+                    double price = Double.parseDouble(priceStr);
+                    log.info("Latest price for {}: ${}", ticker, price);
+                    return price;
+                }
+            }
+
+            log.warn("No price data available for ticker: {}", ticker);
+            return -1;
+        } catch (Exception e) {
+            log.error("Unexpected error getting latest price for ticker {}: {}", ticker, e.getMessage(), e);
+            return -1;
         }
     }
 }

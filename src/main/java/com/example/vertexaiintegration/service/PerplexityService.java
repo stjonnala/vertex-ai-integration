@@ -85,6 +85,7 @@ public class PerplexityService {
             // Process the response
             if (apiResponse != null && apiResponse.getText() != null) {
                 log.info("Received response from Perplexity AI");
+                log.info("Full response from Perplexity AI: {}", apiResponse.getText());
                 return new PerplexityResponse(apiResponse.getText());
             } else {
                 log.error("Received null or empty response from Perplexity AI");
